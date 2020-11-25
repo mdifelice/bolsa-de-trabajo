@@ -18,7 +18,7 @@ contract BolsaDeTrabajo {
     direccionPrueba = _direccionPrueba;
   }
 
-  function crearTrabajo( string descripcion ) public {
+  function crearTrabajo( string memory descripcion ) public {
     return new Trabajo( msg.sender, descripcion, direccionPrueba );
   }
 }
