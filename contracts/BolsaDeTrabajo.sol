@@ -8,7 +8,7 @@ contract BolsaDeTrabajo {
   address creador;
   address direccionPrueba;
 
-  constructor() public {
+  constructor() {
     creador = msg.sender;
   }
 
@@ -18,7 +18,7 @@ contract BolsaDeTrabajo {
     direccionPrueba = _direccionPrueba;
   }
 
-  function crearTrabajo( string memory descripcion ) public {
+  function crearTrabajo( string memory descripcion ) public returns( Trabajo ) {
     return new Trabajo( msg.sender, descripcion, direccionPrueba );
   }
 }

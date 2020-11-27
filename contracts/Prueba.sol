@@ -6,18 +6,20 @@ import './lib/strings.sol';
 import '../node_modules/@chainlink/contracts/src/v0.7/ChainlinkClient.sol';
 
 contract Prueba is ChainlinkClient {
+  using Chainlink for Chainlink.Request;
   using strings for *;
 
   struct Devolucion {
-    bytes4 retrollamada;
+    function( bool ) external retrollamada;
     string resultado;
   }
 
   mapping ( bytes32 => Devolucion ) devoluciones;
 
-  function validar( string memory definicionPrueba, bytes4 retrollamada ) public {
+  function validar( string memory definicionPrueba, function( bool ) external retrollamada ) public {
     string[] memory arregloPartes;
-    uint numeroPartes = definicionPrueba.toSlice().count( ' '.toSlice() ) + 1;
+    strings.slice memory definicionPruebaEnPartes = definicionPrueba.toSlice();
+    uint numeroPartes = definicionPruebaEnPartes.count( ' '.toSlice() ) + 1;
     string memory metodo;
     string memory direccion;
     string memory parametros;
@@ -30,7 +32,7 @@ contract Prueba is ChainlinkClient {
     Chainlink.Request memory pedido;
 
     for ( uint i = 0; i < numeroPartes; i++ ) {
-      arregloPartes[ i ] = definicionPrueba.toSlice().split( ' '.toSlice() ).toString();
+      arregloPartes[ i ] = definicionPruebaEnPartes.split( ' '.toSlice() ).toString();
     }
 
     require ( arregloPartes.length >= 2 );
@@ -64,16 +66,16 @@ contract Prueba is ChainlinkClient {
     devolucion.retrollamada = retrollamada;
     devolucion.resultado    = resultado;
 
-    devoluciones[ idPedido ] = retrollamada; 
+    devoluciones[ idPedido ] = devolucion; 
   }
 
   function cerrar( bytes32 idPedido, string memory cuerpo ) public recordChainlinkFulfillment( idPedido ) {
-    bytes4 devolucion = devoluciones[ idPedido ];
-
+    Devolucion memory devolucion = devoluciones[ idPedido ];
+    strings.slice memory resultado = devolucion.resultado.toSlice();
     bool validacion = false;
 
-    if ( devolucion.resultado.length ) {
-      if ( cuerpo.toSlice().contains( devolucion.resultado.toSlice() ) ) {
+    if ( resultado.len() > 0 ) {
+      if ( cuerpo.toSlice().contains( resultado ) ) {
         validacion = true;
       }
     } else {

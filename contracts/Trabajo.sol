@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 
 pragma solidity 0.7.5;
+pragma abicoder v2;
 
 import './Prueba.sol';
 
@@ -12,8 +13,8 @@ contract Trabajo {
     uint fechaFinalizacion;
   }
 
-  address emprendedor;
-  address trabajador;
+  address payable emprendedor;
+  address payable trabajador;
   address direccionPrueba;
   string descripcion;
   bool[] resultadoPruebas;
@@ -21,7 +22,7 @@ contract Trabajo {
   mapping ( address => Oferta ) ofertas;
 
   modifier abierto() {
-    require ( trabajador == false );
+    require ( trabajador != address( 0 ) );
 
     _;
   }
@@ -32,13 +33,13 @@ contract Trabajo {
     _;
   }
 
-  constructor( address _emprendedor, string memory _descripcion, address _direccionPrueba ) {
+  constructor( address payable _emprendedor, string memory _descripcion, address _direccionPrueba ) {
     emprendedor     = _emprendedor;
     descripcion     = _descripcion;
     direccionPrueba = _direccionPrueba;
   }
 
-  function ofertar( uint256 precio, string memory definicionPruebas, string memory descripcion, int fechaFinalizacion ) public abierto {
+  function ofertar( uint256 precio, string[] memory definicionPruebas, string memory descripcion, uint fechaFinalizacion ) public abierto {
     Oferta memory oferta;
 
     oferta.precio            = precio;
@@ -49,7 +50,7 @@ contract Trabajo {
     ofertas[ msg.sender ] = oferta;
   }
 
-  function aceptarOferta( address _trabajador ) public payable abierto soloEmprendedor {
+  function aceptarOferta( address payable _trabajador ) public payable abierto soloEmprendedor {
     Oferta memory oferta = ofertas[ _trabajador ];
 
     require ( oferta.precio != 0 );
@@ -65,19 +66,22 @@ contract Trabajo {
   function solicitarCierre() public {
     Oferta memory oferta = ofertas[ trabajador ];
 
-    uint ahora = now();
+    uint ahora = block.timestamp;
 
     require ( oferta.fechaFinalizacion >= ahora );
-    require ( ! fechaValidacion || fechaValidacion + ( 24 * 60 * 60 ) < ahora );
+    require ( fechaValidacion != 0 || fechaValidacion + ( 24 * 60 * 60 ) < ahora );
 
-    fechaValidacion  = ahora;
-    resultadoPruebas = [];
+    fechaValidacion = ahora;
 
-    if ( oferta.definicionPruebas.length ) {
+    while ( resultadoPruebas.length > 0 ) {
+      resultadoPruebas.pop();
+    }
+
+    if ( oferta.definicionPruebas.length > 0 ) {
       for ( uint i = 0; i < oferta.definicionPruebas.length; i++ ) {
         Prueba prueba = Prueba( direccionPrueba );
 
-        prueba.validar( oferta.definicionPruebas[ i ], cerrarPrueba );
+        prueba.validar( oferta.definicionPruebas[ i ], this.cerrarPrueba );
       }
     } else {
       cerrar();
@@ -95,7 +99,7 @@ contract Trabajo {
   }
 
   function cerrar() private {
-    address destino;
+    address payable destino;
     bool trabajoCumplido = true;
 
     for ( uint i = 0; i < resultadoPruebas.length; i++ ) {
