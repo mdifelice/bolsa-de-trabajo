@@ -16,7 +16,7 @@ contract Trabajo {
   address payable emprendedor;
   address payable trabajador;
   address direccionPrueba;
-  string descripcion;
+  string public descripcion;
   bool[] resultadoPruebas;
   uint fechaValidacion;
   mapping ( address => Oferta ) ofertas;

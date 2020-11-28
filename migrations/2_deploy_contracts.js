@@ -1,5 +1,7 @@
-const Trabajo = artifacts.require( 'Trabajo' );
+const BolsaDeTrabajo = artifacts.require( 'BolsaDeTrabajo' ),
+      Prueba = artifacts.require( 'Prueba' );
 
 module.exports = function( deployer ) {
-  deployer.deploy( Trabajo );
+  deployer.deploy( BolsaDeTrabajo );
+  deployer.deploy( Prueba );
 };
