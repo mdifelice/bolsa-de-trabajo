@@ -13,16 +13,16 @@ contract Trabajo {
     uint fechaFinalizacion;
   }
 
-  address payable emprendedor;
-  address payable trabajador;
+  address payable public emprendedor;
+  address payable public trabajador;
   address direccionPrueba;
   string public descripcion;
   bool[] resultadoPruebas;
   uint fechaValidacion;
-  mapping ( address => Oferta ) ofertas;
+  mapping ( address => Oferta ) public ofertas;
 
   modifier abierto() {
-    require ( trabajador != address( 0 ) );
+    require ( address( trabajador ) == address( 0 ) );
 
     _;
   }
@@ -68,7 +68,7 @@ contract Trabajo {
 
     uint ahora = block.timestamp;
 
-    require ( oferta.fechaFinalizacion >= ahora );
+    require ( oferta.fechaFinalizacion <= ahora );
     require ( fechaValidacion != 0 || fechaValidacion + ( 24 * 60 * 60 ) < ahora );
 
     fechaValidacion = ahora;

@@ -1,24 +1,50 @@
 const BolsaDeTrabajo = artifacts.require( './BolsaDeTrabajo.sol' ),
-      Trabajo = artifacts.require( './Trabajo.sol' );
+      Prueba         = artifacts.require( './Prueba.sol' ),
+      Trabajo        = artifacts.require( './Trabajo.sol' );
 
 contract( 'BolsaDeTrabajo', accounts => {
+  const trabajador = accounts[1];
+
+  let bolsaDeTrabajo,
+      trabajo;
+
   it( 'Debería guardar dirección de prueba.', async () => {
-    const bolsaDeTrabajo  = await BolsaDeTrabajo.deployed(),
-          direccionPrueba = accounts[ Math.floor( Math.random() * accounts.length ) ];
+    const prueba          = await Prueba.deployed(),
+          direccionPrueba = prueba.address;
     
+    bolsaDeTrabajo = await BolsaDeTrabajo.deployed(),
+
     await bolsaDeTrabajo.ponerDireccionPrueba( direccionPrueba );
 
     assert.equal( await bolsaDeTrabajo.direccionPrueba(), direccionPrueba, 'La dirección de prueba no fue guardada.' );
   } );
 
-  it( 'Debería crear un trabajo.', async () => {
-    const bolsaDeTrabajo  = await BolsaDeTrabajo.deployed(),
-          descripcion     = 'Trabajo de prueba';
+  it( 'Proceso de creación de trabajo.', async () => {
+    const descripcion = 'Trabajo de prueba';
 
     await bolsaDeTrabajo.crearTrabajo( descripcion );
 
-    const trabajo = await Trabajo.at( await bolsaDeTrabajo.trabajos(0) );
+    trabajo = await Trabajo.at( await bolsaDeTrabajo.trabajos(0) );
 
     assert.equal( await trabajo.descripcion(), descripcion, 'La descripción del trabajo no coincide.' );
+  } );
+
+  it( 'Realizar oferta de trabajo.', async () => {
+    const fechaFinalizacion = Math.round( ( new Date() ).getTime() / 1000 ) + 5,
+          precio            = 1000000000;
+
+    await trabajo.ofertar( precio, [ 'get https://www.google.com.ar' ], 'Descripción de oferta', fechaFinalizacion, { from: trabajador } );
+
+    await trabajo.aceptarOferta( trabajador, { value: precio } );
+
+    assert.equal( await trabajo.trabajador(), trabajador, 'El trabajador asignado no coincide.' );
+  } );
+
+  it ( 'Cerrar trabajo.', async () => { 
+    const balanceEmprendedor = await web3.eth.getBalance( trabajador );
+
+    await trabajo.solicitarCierre();
+
+    assert.equal( await web3.eth.getBalance( trabajador ), balanceEmprendedor + precio, 'El trabajador no recibió el pago.' );
   } );
 } );
