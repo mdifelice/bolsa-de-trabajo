@@ -33,8 +33,8 @@ contract Trabajo {
     _;
   }
 
-  constructor( address payable _emprendedor, string memory _descripcion, address _direccionPrueba ) {
-    emprendedor     = _emprendedor;
+  constructor( string memory _descripcion, address _direccionPrueba ) {
+    emprendedor     = msg.sender;
     descripcion     = _descripcion;
     direccionPrueba = _direccionPrueba;
   }

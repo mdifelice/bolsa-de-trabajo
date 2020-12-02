@@ -22,9 +22,9 @@ contract( 'BolsaDeTrabajo', accounts => {
   it( 'Proceso de creación de trabajo.', async () => {
     const descripcion = 'Trabajo de prueba';
 
-    await bolsaDeTrabajo.crearTrabajo( descripcion );
+    let transaccion = await bolsaDeTrabajo.crearTrabajo( descripcion );
 
-    trabajo = await Trabajo.at( await bolsaDeTrabajo.trabajos(0) );
+    trabajo = await Trabajo.at( transaccion.logs[0].address );
 
     assert.equal( await trabajo.descripcion(), descripcion, 'La descripción del trabajo no coincide.' );
   } );
@@ -43,7 +43,7 @@ contract( 'BolsaDeTrabajo', accounts => {
   it ( 'Cerrar trabajo.', async () => { 
     const balanceEmprendedor = await web3.eth.getBalance( trabajador );
 
-    await trabajo.solicitarCierre();
+    await debug( trabajo.solicitarCierre() );
 
     assert.equal( await web3.eth.getBalance( trabajador ), balanceEmprendedor + precio, 'El trabajador no recibió el pago.' );
   } );

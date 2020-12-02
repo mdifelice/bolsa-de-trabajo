@@ -7,7 +7,8 @@ import './Trabajo.sol';
 contract BolsaDeTrabajo {
   address creador;
   address public direccionPrueba;
-  Trabajo[] public trabajos;
+
+  event trabajoCreado( Trabajo );
 
   constructor() {
     creador = msg.sender;
@@ -20,6 +21,8 @@ contract BolsaDeTrabajo {
   }
 
   function crearTrabajo( string memory descripcion ) public {
-    trabajos.push( new Trabajo( msg.sender, descripcion, direccionPrueba ) );
+    Trabajo trabajo = new Trabajo( descripcion, direccionPrueba );
+
+    emit trabajoCreado( trabajo );
   }
 }
