@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 
 pragma solidity 0.7.5;
+pragma abicoder v2;
 
 import './lib/strings.sol';
 import '../node_modules/@chainlink/contracts/src/v0.7/ChainlinkClient.sol';
@@ -17,9 +18,7 @@ contract Prueba is ChainlinkClient {
   mapping ( bytes32 => Devolucion ) devoluciones;
 
   function validar( string memory definicionPrueba, function( bool ) external retrollamada ) public {
-    string[] memory arregloPartes;
-    strings.slice memory definicionPruebaEnPartes = definicionPrueba.toSlice();
-    uint numeroPartes = definicionPruebaEnPartes.count( ' '.toSlice() ) + 1;
+    string[] memory arregloPartes = normalizarDefinicionPrueba( definicionPrueba );
     string memory metodo;
     string memory direccion;
     string memory parametros;
@@ -30,10 +29,6 @@ contract Prueba is ChainlinkClient {
     bytes32 idPedido;
     uint tarifa = 0;
     Chainlink.Request memory pedido;
-
-    for ( uint i = 0; i < numeroPartes; i++ ) {
-      arregloPartes[ i ] = definicionPruebaEnPartes.split( ' '.toSlice() ).toString();
-    }
 
     require ( arregloPartes.length >= 2 );
 
@@ -83,5 +78,17 @@ contract Prueba is ChainlinkClient {
     }
 
     devolucion.retrollamada( validacion );
+  }
+
+  function normalizarDefinicionPrueba( string memory definicionPrueba ) private returns ( string[] memory ) {
+    strings.slice memory definicionPruebaEnPartes = definicionPrueba.toSlice();
+    uint numeroPartes = definicionPruebaEnPartes.count( ' '.toSlice() ) + 1;
+    string[] memory arregloPartes = new string[]( numeroPartes );
+
+    for ( uint i = 0; i < numeroPartes; i++ ) {
+      arregloPartes[ i ] = definicionPruebaEnPartes.split( ' '.toSlice() ).toString();
+    }
+
+    return arregloPartes;
   }
 }

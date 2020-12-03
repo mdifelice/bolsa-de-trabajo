@@ -21,7 +21,7 @@ contract BolsaDeTrabajo {
   }
 
   function crearTrabajo( string memory descripcion ) public {
-    Trabajo trabajo = new Trabajo( descripcion, direccionPrueba );
+    Trabajo trabajo = new Trabajo( msg.sender, descripcion, direccionPrueba );
 
     emit trabajoCreado( trabajo );
   }

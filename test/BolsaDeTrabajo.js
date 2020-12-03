@@ -3,7 +3,8 @@ const BolsaDeTrabajo = artifacts.require( './BolsaDeTrabajo.sol' ),
       Trabajo        = artifacts.require( './Trabajo.sol' );
 
 contract( 'BolsaDeTrabajo', accounts => {
-  const trabajador = accounts[1];
+  const trabajador = accounts[1],
+        precio     = 1000000000;
 
   let bolsaDeTrabajo,
       trabajo;
@@ -24,14 +25,13 @@ contract( 'BolsaDeTrabajo', accounts => {
 
     let transaccion = await bolsaDeTrabajo.crearTrabajo( descripcion );
 
-    trabajo = await Trabajo.at( transaccion.logs[0].address );
+    trabajo = await Trabajo.at( transaccion.logs[0].args[0] );
 
     assert.equal( await trabajo.descripcion(), descripcion, 'La descripción del trabajo no coincide.' );
   } );
 
   it( 'Realizar oferta de trabajo.', async () => {
-    const fechaFinalizacion = Math.round( ( new Date() ).getTime() / 1000 ) + 5,
-          precio            = 1000000000;
+    const fechaFinalizacion = Math.round( ( new Date() ).getTime() / 1000 );
 
     await trabajo.ofertar( precio, [ 'get https://www.google.com.ar' ], 'Descripción de oferta', fechaFinalizacion, { from: trabajador } );
 
