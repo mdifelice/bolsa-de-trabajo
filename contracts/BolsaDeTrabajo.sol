@@ -7,6 +7,8 @@ import './Trabajo.sol';
 contract BolsaDeTrabajo {
   address creador;
   address public direccionPrueba;
+  Trabajo[] public trabajos;
+  uint public totalTrabajos;
 
   event trabajoCreado( Trabajo );
 
@@ -24,5 +26,9 @@ contract BolsaDeTrabajo {
     Trabajo trabajo = new Trabajo( msg.sender, descripcion, direccionPrueba );
 
     emit trabajoCreado( trabajo );
+
+    totalTrabajos++;
+
+    trabajos.push( trabajo );
   }
 }

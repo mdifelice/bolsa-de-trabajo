@@ -33,7 +33,7 @@ contract( 'BolsaDeTrabajo', accounts => {
   it( 'Realizar oferta de trabajo.', async () => {
     const fechaFinalizacion = Math.round( ( new Date() ).getTime() / 1000 );
 
-    await trabajo.ofertar( precio, [ 'get https://www.google.com.ar' ], 'Descripción de oferta', fechaFinalizacion, { from: trabajador } );
+    await trabajo.ofertar( precio, [ 'GET https://www.google.com.ar' ], 'Descripción de oferta', fechaFinalizacion, { from: trabajador } );
 
     await trabajo.aceptarOferta( trabajador, { value: precio } );
 
@@ -43,7 +43,7 @@ contract( 'BolsaDeTrabajo', accounts => {
   it ( 'Cerrar trabajo.', async () => { 
     const balanceEmprendedor = await web3.eth.getBalance( trabajador );
 
-    await debug( trabajo.solicitarCierre() );
+    await trabajo.solicitarCierre();
 
     assert.equal( await web3.eth.getBalance( trabajador ), balanceEmprendedor + precio, 'El trabajador no recibió el pago.' );
   } );
