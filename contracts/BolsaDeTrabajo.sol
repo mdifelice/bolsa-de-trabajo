@@ -16,7 +16,7 @@ contract BolsaDeTrabajo {
     creador = msg.sender;
   }
 
-  function ponerDireccionPrueba( address _direccionPrueba ) public {
+  function establecerDireccionPrueba( address _direccionPrueba ) public {
     require ( msg.sender == creador );
 
     direccionPrueba = _direccionPrueba;
