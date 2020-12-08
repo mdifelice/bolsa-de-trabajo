@@ -1,8 +1,9 @@
 import { Component } from 'react';
-import Menu from './Menu';
+import CrearTrabajo from './CrearTrabajo';
+import ListarTrabajos from './ListarTrabajos';
 
 export default class App extends Component {
-  state = { loading: true, drizzleState: null };
+  state = { loading: true, drizzleState: null, pantalla: null };
 
   componentDidMount() {
     const { drizzle } = this.props;
@@ -24,13 +25,22 @@ export default class App extends Component {
     this.unsubscribe();
   }
 
+  cargarPantalla( pantalla ) {
+    this.setState( { pantalla : pantalla } );
+  }
+
   render() {
     //if ( this.state.loading ) return "Loading Drizzle...";
 
+    console.log(this.state);
     return <div className="container">
       <h1>Bolsa de trabajo v0.1</h1>
-      <Menu />
-      </div>
-      ;
+      <ul className="nav nav-tabs">
+        <li className="nav-item"><a className="nav-link" href="#" onClick={ ( e ) => { e.preventDefault(); this.cargarPantalla( <CrearTrabajo /> ) } }>Crear trabajo</a></li>
+        <li className="nav-item"><a className="nav-link" href="#" onClick={ ( e ) => { e.preventDefault(); this.cargarPantalla( <ListarTrabajos /> ) } }>Listar trabajos</a></li>
+      </ul>
+      <div className="mt-3">{ this.state.pantalla }</div>
+    </div>
+    ;
   }
 }
