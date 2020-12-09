@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import CrearTrabajo from './CrearTrabajo';
 import ListarTrabajos from './ListarTrabajos';
+import { Modal, Spinner } from 'react-bootstrap';
 
 export default class App extends Component {
   state = { loading: true, drizzleState: null, pantalla: null };
@@ -30,17 +31,32 @@ export default class App extends Component {
   }
 
   render() {
-    //if ( this.state.loading ) return "Loading Drizzle...";
-
-    console.log(this.state);
-    return <div className="container">
+    let salida = [
+      <div className="container" key="contenedor">
       <h1>Bolsa de trabajo v0.1</h1>
       <ul className="nav nav-tabs">
-        <li className="nav-item"><a className="nav-link" href="#" onClick={ ( e ) => { e.preventDefault(); this.cargarPantalla( <CrearTrabajo /> ) } }>Crear trabajo</a></li>
-        <li className="nav-item"><a className="nav-link" href="#" onClick={ ( e ) => { e.preventDefault(); this.cargarPantalla( <ListarTrabajos /> ) } }>Listar trabajos</a></li>
+        <li className="nav-item"><a className="nav-link" href="#" onClick={ ( e ) => { e.preventDefault(); this.cargarPantalla( <CrearTrabajo drizzle={this.props.drizzle} drizzleState={this.props.drizzleState} /> ) } }>Crear trabajo</a></li>
+        <li className="nav-item"><a className="nav-link" href="#" onClick={ ( e ) => { e.preventDefault(); this.cargarPantalla( <ListarTrabajos drizzle={this.props.drizzle} drizzleState={this.props.drizzleState} /> ) } }>Listar trabajos</a></li>
       </ul>
       <div className="mt-3">{ this.state.pantalla }</div>
     </div>
-    ;
+    ];
+
+    if ( this.state.loading ) {
+      salida.push( 
+        <Modal key="modal" show={ true } onHide={ () => {} }>
+          <Modal.Header>
+            <Modal.Title>Cargando...</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Spinner animation="border" role="status">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+          </Modal.Body>
+        </Modal>
+      );
+    }
+
+    return salida;
   }
 }
