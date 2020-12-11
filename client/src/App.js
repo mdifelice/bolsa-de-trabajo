@@ -2,7 +2,6 @@ import { Component } from 'react';
 import Cargador from './Cargador';
 import CrearTrabajo from './CrearTrabajo';
 import ListarTrabajos from './ListarTrabajos';
-import { Modal, Spinner } from 'react-bootstrap';
 
 export default class App extends Component {
   state = { drizzleState: null, pantalla: null };
@@ -23,12 +22,12 @@ export default class App extends Component {
       // check to see if it's ready, if so, update local component state
       if ( drizzleState.drizzleStatus.initialized ) {
         this.setState( { drizzleState } );
-      }
 
-      if ( ! this.iniciado ) {
-        Cargador.desactivar();
+        if ( ! this.iniciado ) {
+          Cargador.desactivar();
 
-        this.iniciado = true;
+          this.iniciado = true;
+        }
       }
     } );
   }
