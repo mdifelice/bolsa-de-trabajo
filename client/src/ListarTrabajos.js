@@ -9,26 +9,39 @@ export default class ListarTrabajos extends Component {
 
     const contrato = drizzle.contracts.BolsaDeTrabajo;
 
-    const { BolsaDeTrabajo } = this.props.drizzleState.contracts;
-
-    console.log( drizzle );
-    console.log( this.props.drizzleState );
+    console.log(1);
+    console.log(drizzle.store.getState().contracts.BolsaDeTrabajo.totalTrabajos);
     const totalDataKey = contrato.methods.totalTrabajos.cacheCall();
+    console.log(2);
+    console.log(drizzle.store.getState().contracts.BolsaDeTrabajo.totalTrabajos);
+    const { BolsaDeTrabajo } = drizzle.store.getState().contracts;
 
+
+    console.log(3);
+    console.log(drizzle.store.getState().contracts.BolsaDeTrabajo.totalTrabajos);
     const totalTrabajos = BolsaDeTrabajo.totalTrabajos[ totalDataKey ];
 
-            console.log(totalTrabajos);
+    console.log(4);
+    console.log(drizzle.store.getState().contracts.BolsaDeTrabajo.totalTrabajos);
     if ( totalTrabajos ) {
       for ( let i = 0; i < totalTrabajos.value; i++ ) {
         let key = contrato.methods.trabajos.cacheCall( i );
 
         let direccion = BolsaDeTrabajo.trabajos[ key ];
 
+        let trabajos = [];
+
         if ( direccion ) {
-          drizzle.addContract( {
-            contractName: direccion.value,
-            web3Contract: new drizzle.web3.eth.Contract( Trabajo.abi, direccion.value ),
-          } );
+          trabajos.push( direccion.value );
+
+          if ( ! drizzle.contracts[ direccion.value ] ) {
+            drizzle.addContract( {
+              contractName: direccion.value,
+              web3Contract: new drizzle.web3.eth.Contract( Trabajo.abi, direccion.value, { data: Trabajo.deployedBytecode } ),
+            } );
+          }
+
+          this.setState( { trabajos } );
         }
       }
     }
@@ -37,8 +50,6 @@ export default class ListarTrabajos extends Component {
   render() {
     let salida = null;
 
-    console.log(this.props.drizzle);
-    console.log(this.state);
     if ( this.state.trabajos ) {
       salida =
         <table className="table">
@@ -53,16 +64,28 @@ export default class ListarTrabajos extends Component {
           </thead>
           <tbody>
           { this.state.trabajos.map( ( trabajo, i ) => {
-            const empKey = this.props.drizzle.contracts.Trabajo.methods.emprendedor.cacheCall();
-            const descKey = this.props.drizzle.contracts.Trabajo.methods.descripcion.cacheCall();
+            console.log( trabajo );
+            console.log( this.props.drizzleState );
+            console.log( this.props.drizzle );
+            if ( this.props.drizzle.contracts[trabajo]
+              && this.props.drizzleState.contracts[trabajo]
+            ) {
+              const empKey = this.props.drizzle.contracts[trabajo].methods.emprendedor.cacheCall();
+              const descKey = this.props.drizzle.contracts[trabajo].methods.descripcion.cacheCall();
 
-            return <tr key={ i }>
-              <td>{ trabajo.value }</td>
-              <td>{ this.props.drizzleState.Trabajo.emprendedor[ empKey ] }</td>
-              <td>{ this.props.drizzleState.Trabajo.descripcion[ descKey ] }</td>
-              <td></td>
-              <td><a href="#" onClick="">Hacer oferta</a></td>
-            </tr>;
+              if ( this.props.drizzleState.contracts[trabajo].emprendedor[ empKey ]
+                && this.props.drizzleState.contracts[trabajo].descripcion[ descKey ]
+              ) {
+                return <tr key={ i }>
+                  <td><code>{ trabajo }</code></td>
+                  <td><code>{ this.props.drizzleState.contracts[trabajo].emprendedor[ empKey ].value }</code></td>
+                  <td>{ this.props.drizzleState.contracts[trabajo].descripcion[ descKey ].value }</td>
+                  <td></td>
+                  <td><a href="#" onClick="">Hacer oferta</a></td>
+                </tr>;
+              }
+            }
+            return null;
           } ) }
           </tbody>
         </table>

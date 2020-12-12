@@ -21,6 +21,8 @@ export default class App extends Component {
 
       // check to see if it's ready, if so, update local component state
       if ( drizzleState.drizzleStatus.initialized ) {
+        console.log('store update');
+        console.log(drizzleState.contracts.BolsaDeTrabajo.totalTrabajos);
         this.setState( { drizzleState } );
 
         if ( ! this.iniciado ) {
