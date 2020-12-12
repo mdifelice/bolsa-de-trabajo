@@ -1,58 +1,46 @@
-import { Component } from 'react';
 import Cargador from './Cargador';
+import ComponenteDrizzle from './ComponenteDrizzle';
 
-export default class CrearTrabajo extends Component {
-  state = { idPila : null, ultimaTransaccion : null };
+export default class CrearTrabajo extends ComponenteDrizzle {
+  state = {
+    ultimaTransaccion : null,
+  };
 
-  handleFormSubmission = e => {
-    e.preventDefault();
+	idCrearTrabajo = null;
 
+  crearTrabajo( descripcion ) {
     Cargador.activar();
 
-    const { drizzle, drizzleState } = this.props;
+    const { drizzle } = this.props,
+          contrato    = drizzle.contracts.BolsaDeTrabajo;
 
-    const contrato = drizzle.contracts.BolsaDeTrabajo;
 
-    const descripcion = e.target.descripcion.value;
-
-    const idPila = contrato.methods['crearTrabajo'].cacheSend(
-      descripcion,
-      {
-        from: drizzleState.accounts[0]
-      }
-    );
-
-    this.setState( { idPila } );
+		this.idCrearTrabajo = contrato.methods['crearTrabajo'].cacheSend(
+			descripcion,
+			{
+				from: drizzle.store.getState().accounts[0]
+			}
+		);
   }
 
-  componentDidMount() {
-    this.unsubscribe = this.props.drizzle.store.subscribe( () => {
-      const drizzleState = this.props.drizzle.store.getState();
+  drizzleActualizado( estadoDrizzle ) {
+    if ( null !== this.idCrearTrabajo ) {
+      Cargador.desactivar();
 
-      if ( null !== this.state.idPila ) {
-        Cargador.desactivar();
+      const idTransaccion     = estadoDrizzle.transactionStack[ this.idCrearTrabajo ],
+            ultimaTransaccion = estadoDrizzle.transactions[ idTransaccion ];
 
-        const hash = drizzleState.transactionStack[ this.state.idPila ];
-
-        const transaccion = drizzleState.transactions[ hash ];
-
-        if ( transaccion ) {
-          this.setState( { ultimaTransaccion : transaccion } );
-        }
+      if ( ultimaTransaccion ) {
+        this.setState( { ultimaTransaccion } );
       }
-    } );
-  }
-
-  componentWillUnmount() {
-    if ( this.unsubscribe ) {
-      this.unsubscribe();
     }
   }
 
   render() {
     const ultimaTransaccion = this.state.ultimaTransaccion;
 
-    let alerta = null;
+    let alerta = null,
+        descripcion;
 
     if ( ultimaTransaccion ) {
       let tipo = null,
@@ -60,18 +48,17 @@ export default class CrearTrabajo extends Component {
 
       switch ( ultimaTransaccion.status ) {
         case 'success':
-          mensaje = 'Transacción exitosa';
-          tipo = 'success';
-
-          document.forms[0].descripcion.value = '';
+          mensaje     = 'Transacción exitosa';
+          tipo        = 'success';
+          descripcion = '';
           break;
         case 'pending':
           mensaje = 'Transacción pendiente';
-          tipo = 'warning';
+          tipo    = 'warning';
           break;
         case 'error':
           mensaje = 'Ha habido un error con la transaccion: ' + ultimaTransaccion.error.message;
-          tipo = 'danger';
+          tipo    = 'danger';
           break;
       }
 
@@ -82,10 +69,10 @@ export default class CrearTrabajo extends Component {
       }
     }
 
-    return <form onSubmit={ this.handleFormSubmission }>
+    return <form onSubmit={ e => { e.preventDefault(); this.crearTrabajo( e.target.descripcion.value ) } }>
       { alerta }
       <div className="form-group">
-        <textarea name="descripcion" placeholder="Descripción" className="form-control" required autoFocus></textarea>
+        <textarea name="descripcion" placeholder="Descripción" className="form-control" value={ descripcion } required autoFocus></textarea>
       </div>
       <input type="submit" className="btn btn-primary" />
     </form>;

@@ -1,55 +1,55 @@
-import { Component } from 'react';
+import React from 'react';
+import ComponenteDrizzle from './ComponenteDrizzle';
 import Cargador from './Cargador';
 import CrearTrabajo from './CrearTrabajo';
 import ListarTrabajos from './ListarTrabajos';
 
-export default class App extends Component {
-  state = { drizzleState: null, pantalla: null };
+export default class App extends ComponenteDrizzle {
+  state = { pantalla : null };
 
   iniciado = false;
 
-  componentDidMount() {
-    const { drizzle } = this.props;
+  constructor( props ) {
+    super( props );
 
     Cargador.activar();
-
-    // subscribe to changes in the store
-    this.unsubscribe = drizzle.store.subscribe( () => {
-
-      // every time the store updates, grab the state from drizzle
-      const drizzleState = drizzle.store.getState();
-
-      // check to see if it's ready, if so, update local component state
-      if ( drizzleState.drizzleStatus.initialized ) {
-        console.log('store update');
-        console.log(drizzleState.contracts.BolsaDeTrabajo.totalTrabajos);
-        this.setState( { drizzleState } );
-
-        if ( ! this.iniciado ) {
-          Cargador.desactivar();
-
-          this.iniciado = true;
-        }
-      }
-    } );
-  }
-
-  componentWillUnmount() {
-    this.unsubscribe();
   }
 
   cargarPantalla( pantalla ) {
-    this.setState( { pantalla : pantalla } );
+    this.setState( { pantalla } );
+  }
+
+  drizzleActualizado( estadoDrizzle ) {
+    if ( estadoDrizzle.drizzleStatus.initialized ) {
+      if ( ! this.iniciado ) {
+        Cargador.desactivar();
+
+        this.iniciado = true;
+      }
+    }
   }
 
   render() {
+    const menu = [
+      {
+        titulo   : 'Crear trabajo',
+        pantalla : CrearTrabajo
+      },
+      {
+        titulo   : 'Listar trabajos',
+        pantalla : ListarTrabajos
+      }
+    ];
+
     return <div className="container">
       <h1>Bolsa de trabajo v0.1</h1>
       <ul className="nav nav-tabs">
-        <li className="nav-item"><a className="nav-link active" href="#" onClick={ ( e ) => { e.preventDefault(); this.cargarPantalla( <CrearTrabajo drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} /> ) } }>Crear trabajo</a></li>
-        <li className="nav-item"><a className="nav-link" href="#" onClick={ ( e ) => { e.preventDefault(); this.cargarPantalla( <ListarTrabajos drizzle={this.props.drizzle} drizzleState={this.state.drizzleState} /> ) } }>Listar trabajos</a></li>
+        { menu.map( ( item, i ) => <li key={ i } className="nav-item">
+          <a className={ 'nav-link' + ( this.state.pantalla == item.pantalla ? ' active' : '' ) } href="#" onClick={ ( e ) => { e.preventDefault(); this.cargarPantalla( item.pantalla ) } }>{ item.titulo }</a>
+          </li>
+        ) }
       </ul>
-      <div className="mt-3">{ this.state.pantalla }</div>
+      <div className="mt-3">{ this.state.pantalla ? React.createElement( this.state.pantalla, { drizzle : this.props.drizzle } ) : null }</div>
     </div>
     ;
   }

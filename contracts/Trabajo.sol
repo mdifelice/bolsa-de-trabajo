@@ -19,6 +19,7 @@ contract Trabajo {
   string public descripcion;
   bool[] resultadoPruebas;
   uint fechaValidacion;
+  uint public totalOfertas;
   mapping ( address => Oferta ) public ofertas;
 
   modifier abierto() {
@@ -48,6 +49,8 @@ contract Trabajo {
     oferta.fechaFinalizacion = fechaFinalizacion;
 
     ofertas[ msg.sender ] = oferta;
+
+    totalOfertas++;
   }
 
   function aceptarOferta( address payable _trabajador ) public payable abierto soloEmprendedor {

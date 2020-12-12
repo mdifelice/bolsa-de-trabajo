@@ -1,12 +1,12 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.min.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { Drizzle, generateStore } from "@drizzle/store";
-import BolsaDeTrabajo from "./contracts/BolsaDeTrabajo.json";
+import { Drizzle, generateStore } from '@drizzle/store';
+import BolsaDeTrabajo from './contracts/BolsaDeTrabajo.json';
 
-// let drizzle know what contracts we want and how to access our test blockchain
-const options = {
+const drizzle = new Drizzle( {
   contracts: [ BolsaDeTrabajo ],
   web3: {
     fallback: {
@@ -14,9 +14,10 @@ const options = {
       url: 'ws://127.0.0.1:7545',
     },
   },
-};
+} );
 
-// setup the drizzle store and drizzle
-const drizzle = new Drizzle( options );
+var root = document.getElementById( 'root' );
 
-ReactDOM.render( <App drizzle={drizzle} />, document.getElementById( 'root' ) );
+if ( root ) {
+  ReactDOM.render( <App drizzle={drizzle} />, root );
+}
