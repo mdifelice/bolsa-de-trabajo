@@ -23,7 +23,7 @@ contract( 'BolsaDeTrabajo', accounts => {
     assert.equal( await bolsaDeTrabajo.direccionPrueba(), direccionPrueba, 'La dirección de prueba no fue guardada.' );
   } );
 
-  it( 'Apuntar Rinkeby como dirección de oráculo.', async () => {
+  it( 'Apuntar dirección de oráculo de Rinkeby.', async () => {
     await prueba.apuntarRinkeby();
 
     assert.notEqual( await prueba.oraculo(), direccionNula, 'La dirección del oráculo no fue guardada.' );
@@ -40,13 +40,14 @@ contract( 'BolsaDeTrabajo', accounts => {
   } );
 
   it( 'Realizar oferta de trabajo.', async () => {
-    const fechaFinalizacion = Math.round( ( new Date() ).getTime() / 1000 );
+    const fechaFinalizacion = Math.round( ( new Date() ).getTime() / 1000 ) - 10,
+          ofertaElegida     = 0;
 
-    await trabajo.ofertar( precio, [ 'GET https://www.google.com.ar' ], 'Descripción de oferta', fechaFinalizacion, { from: trabajador } );
+    await trabajo.ofertar( precio, 'GET https://www.google.com.ar', 'Descripción de oferta', fechaFinalizacion, { from: trabajador } );
 
-    await trabajo.aceptarOferta( trabajador, { value: precio } );
+    await trabajo.aceptarOferta( ofertaElegida, { value: precio } );
 
-    assert.equal( await trabajo.trabajador(), trabajador, 'El trabajador asignado no coincide.' );
+    assert.equal( await trabajo.ofertaElegida(), ofertaElegida, 'El trabajador asignado no coincide.' );
   } );
 
   it ( 'Cerrar trabajo.', async () => { 

@@ -1,35 +1,20 @@
 import React from 'react';
 import ComponenteDrizzle from './ComponenteDrizzle';
-import Cargador from './Cargador';
 import CrearTrabajo from './CrearTrabajo';
 import ListarTrabajos from './ListarTrabajos';
 
 export default class App extends ComponenteDrizzle {
-  state = { pantalla : null };
-
-  iniciado = false;
-
   constructor( props ) {
     super( props );
 
-    Cargador.activar();
+    this.state.pantalla = null;
   }
 
   cargarPantalla( pantalla ) {
     this.setState( { pantalla } );
   }
 
-  drizzleActualizado( estadoDrizzle ) {
-    if ( estadoDrizzle.drizzleStatus.initialized ) {
-      if ( ! this.iniciado ) {
-        Cargador.desactivar();
-
-        this.iniciado = true;
-      }
-    }
-  }
-
-  render() {
+  pantalla() {
     const menu = [
       {
         titulo   : 'Crear trabajo',

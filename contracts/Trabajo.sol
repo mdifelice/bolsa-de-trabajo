@@ -7,23 +7,23 @@ import './Prueba.sol';
 
 contract Trabajo {
   struct Oferta {
+    address payable trabajador;
     uint256 precio;
-    string[] definicionPruebas;
+    string definicionPruebas;
     string descripcion;
     uint fechaFinalizacion;
   }
 
   address payable public emprendedor;
-  address payable public trabajador;
   address direccionPrueba;
   string public descripcion;
-  bool[] resultadoPruebas;
   uint fechaValidacion;
   uint public totalOfertas;
-  mapping ( address => Oferta ) public ofertas;
+  int public ofertaElegida;
+  Oferta[] public ofertas;
 
   modifier abierto() {
-    require ( address( trabajador ) == address( 0 ) );
+    require ( ofertaElegida == -1 );
 
     _;
   }
@@ -38,28 +38,30 @@ contract Trabajo {
     emprendedor     = _emprendedor;
     descripcion     = _descripcion;
     direccionPrueba = _direccionPrueba;
+    ofertaElegida   = -1;
   }
 
-  function ofertar( uint256 precio, string[] memory definicionPruebas, string memory descripcion, uint fechaFinalizacion ) public abierto {
+  function ofertar( uint256 precio, string memory definicionPruebas, string memory descripcion, uint fechaFinalizacion ) public abierto {
     Oferta memory oferta;
 
+    oferta.trabajador        = msg.sender;
     oferta.precio            = precio;
     oferta.definicionPruebas = definicionPruebas;
     oferta.descripcion       = descripcion;
     oferta.fechaFinalizacion = fechaFinalizacion;
 
-    ofertas[ msg.sender ] = oferta;
+    ofertas.push( oferta );
 
     totalOfertas++;
   }
 
-  function aceptarOferta( address payable _trabajador ) public payable abierto soloEmprendedor {
-    Oferta memory oferta = ofertas[ _trabajador ];
+  function aceptarOferta( uint _ofertaElegida ) public payable abierto soloEmprendedor {
+    ofertaElegida = int( _ofertaElegida );
+
+    Oferta memory oferta = ofertas[ uint( ofertaElegida ) ];
 
     require ( oferta.precio != 0 );
     require ( msg.value == oferta.precio );
-
-    trabajador = _trabajador;
   }
 
   function cancelar() public abierto soloEmprendedor {
@@ -67,7 +69,7 @@ contract Trabajo {
   }
 
   function solicitarCierre() public {
-    Oferta memory oferta = ofertas[ trabajador ];
+    Oferta memory oferta = ofertas[ uint( ofertaElegida ) ];
 
     uint ahora = block.timestamp;
 
@@ -76,45 +78,26 @@ contract Trabajo {
 
     fechaValidacion = ahora;
 
-    while ( resultadoPruebas.length > 0 ) {
-      resultadoPruebas.pop();
-    }
+    if ( direccionPrueba != address( 0 ) ) {
+      Prueba prueba = Prueba( direccionPrueba );
 
-    if ( oferta.definicionPruebas.length > 0 ) {
-      for ( uint i = 0; i < oferta.definicionPruebas.length; i++ ) {
-        Prueba prueba = Prueba( direccionPrueba );
-
-        prueba.validar( oferta.definicionPruebas[ i ], this.cerrarPrueba );
-      }
+      prueba.validar( oferta.definicionPruebas, this.cerrarPrueba );
     } else {
-      cerrar();
+      cerrar( true );
     }
   }
 
   function cerrarPrueba( bool resultadoPrueba ) public {
     require ( msg.sender == direccionPrueba );
 
-    resultadoPruebas.push( resultadoPrueba );
-
-    if ( resultadoPruebas.length == ofertas[ trabajador ].definicionPruebas.length ) {
-      cerrar();
-    }
+    cerrar( resultadoPrueba );
   }
 
-  function cerrar() private {
+  function cerrar( bool resultadoPrueba ) private {
     address payable destino;
-    bool trabajoCumplido = true;
 
-    for ( uint i = 0; i < resultadoPruebas.length; i++ ) {
-      if ( ! resultadoPruebas[ i ] ) {
-        trabajoCumplido = false;
-
-        break;
-      }
-    }
-
-    if ( trabajoCumplido ) {
-      destino = trabajador;
+    if ( resultadoPrueba ) {
+      destino = ofertas[ uint( ofertaElegida ) ].trabajador;
     } else {
       destino = emprendedor;
     }
