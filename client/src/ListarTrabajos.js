@@ -219,29 +219,36 @@ export default class ListarTrabajos extends ComponenteDrizzle {
 
               if ( esEmprendedor ) {
                 if ( trabajo.ofertas.length ) {
-                  acciones.push( <a className="btn btn-primary" href="#" data-target="#ofertas" data-toggle="modal" onClick={ () => this.setState( { trabajoElegido : trabajo } ) }>Ver ofertas</a> );
+                  acciones.push( <button className="btn btn-primary" data-target="#ofertas" data-toggle="modal" onClick={ () => this.setState( { trabajoElegido : trabajo } ) }>Ver ofertas</button> );
                 }
               } else {
-                acciones.push( <a className="btn btn-primary" href="#" data-target="#oferta" data-toggle="modal" onClick={ () => this.setState( { trabajoElegido : trabajo } ) }>Hacer oferta</a> );
+                acciones.push( <button className="btn btn-primary" data-target="#oferta" data-toggle="modal" onClick={ () => this.setState( { trabajoElegido : trabajo } ) }>Hacer oferta</button> );
               }
 
               permitirCancelar = true;
             } else {
-              if ( trabajo.balance == -1 ) {
-                estado = 'esperando';
-                insignia = 'secondary';
-
-                permitirCancelar = true;
-              } else if ( trabajo.balance > 0 ) {
-                estado = 'cerrado';
-                insignia = 'warning';
-
-                acciones.push( <a className="btn btn-success" href="#" onClick={ ( e ) => { e.preventDefault(); this.solicitarCierre( trabajo.direccion ); } }>Solicitar cierre</a> );
-
-                permitirCancelar = true;
-              } else {
+              if ( trabajo.balance == 0 ) {
                 estado = 'terminado';
                 insignia = 'success';
+              } else {
+                if ( trabajo.balance == -1 ) {
+                  estado = 'esperando';
+                  insignia = 'secondary';
+
+                  permitirCancelar = true;
+                } else if ( trabajo.balance > 0 ) {
+                  estado = 'cerrado';
+                  insignia = 'warning';
+                }
+
+                if (
+                  trabajo.ofertaElegida !== -1
+                  && trabajo.ofertas[ trabajo.ofertaElegida ]
+                  && trabajo.ofertas[ trabajo.ofertaElegida ].fechaFinalizacion * 1000 <= Date.now() ) {
+                  acciones.push( <button className="btn btn-success" onClick={ ( e ) => { e.preventDefault(); this.solicitarCierre( trabajo.direccion ); } } disabled={ estado === 'terminado' }>Solicitar cierre</button> );
+                }
+
+                permitirCancelar = true;
               }
             }
 
@@ -249,7 +256,7 @@ export default class ListarTrabajos extends ComponenteDrizzle {
               permitirCancelar
               && esEmprendedor
             ) {
-              acciones.push( <a className="btn btn-danger" href="#" onClick={ ( e ) => { e.preventDefault(); this.cancelar( trabajo.direccion ); } }>Cancelar</a> );
+              acciones.push( <button className="btn btn-danger" onClick={ ( e ) => { e.preventDefault(); this.cancelar( trabajo.direccion ); } }>Cancelar</button> );
             }
 
             salida = <tr key={ i }>
@@ -277,7 +284,7 @@ export default class ListarTrabajos extends ComponenteDrizzle {
 							form.precio.value,
 							form.definicionPruebas.value,
 							form.descripcion.value,
-							new Date( form.fechaFinalizacion.value ).getTime() / 1000
+							Date.parse( form.fechaFinalizacion.value ) / 1000
 						);
 
 						$( '#oferta' ).modal( 'hide' ).find( ':input' ).val( '' );

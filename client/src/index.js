@@ -14,10 +14,19 @@ const drizzle = new Drizzle( {
       url: 'ws://127.0.0.1:7545',
     },
   },
-} );
-
-var root = document.getElementById( 'root' );
+} ),
+      root = document.getElementById( 'root' );
 
 if ( root ) {
   ReactDOM.render( <App drizzle={drizzle} />, root );
+}
+
+if ( window.ethereum ) {
+  window.ethereum.on( 'networkChanged', () => {
+    window.location.reload();
+  } );
+
+  window.ethereum.on( 'accountsChanged', () => {
+    window.location.reload();
+  } );
 }

@@ -12,6 +12,10 @@ export default class ComponenteDrizzle extends Component {
 
   desubscribirse = null;
 
+  constructor( props ) {
+    super( props );
+  }
+
   componentDidMount() {
     const estadoDrizzle = this.props.drizzle.store.getState();
 
