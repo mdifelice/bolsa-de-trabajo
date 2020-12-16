@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/bolsa-de-trabajo-build/static/css/main.411ea4b5.chunk.css",
-    "main.js": "/bolsa-de-trabajo-build/static/js/main.21982c77.chunk.js",
-    "main.js.map": "/bolsa-de-trabajo-build/static/js/main.21982c77.chunk.js.map",
-    "runtime-main.js": "/bolsa-de-trabajo-build/static/js/runtime-main.5a26d989.js",
-    "runtime-main.js.map": "/bolsa-de-trabajo-build/static/js/runtime-main.5a26d989.js.map",
-    "static/css/2.20aa2d7b.chunk.css": "/bolsa-de-trabajo-build/static/css/2.20aa2d7b.chunk.css",
-    "static/js/2.744db724.chunk.js": "/bolsa-de-trabajo-build/static/js/2.744db724.chunk.js",
-    "static/js/2.744db724.chunk.js.map": "/bolsa-de-trabajo-build/static/js/2.744db724.chunk.js.map",
-    "index.html": "/bolsa-de-trabajo-build/index.html",
-    "static/css/2.20aa2d7b.chunk.css.map": "/bolsa-de-trabajo-build/static/css/2.20aa2d7b.chunk.css.map",
-    "static/css/main.411ea4b5.chunk.css.map": "/bolsa-de-trabajo-build/static/css/main.411ea4b5.chunk.css.map",
-    "static/js/2.744db724.chunk.js.LICENSE.txt": "/bolsa-de-trabajo-build/static/js/2.744db724.chunk.js.LICENSE.txt"
+    "main.css": "/bolsa-de-trabajo/static/css/main.411ea4b5.chunk.css",
+    "main.js": "/bolsa-de-trabajo/static/js/main.21982c77.chunk.js",
+    "main.js.map": "/bolsa-de-trabajo/static/js/main.21982c77.chunk.js.map",
+    "runtime-main.js": "/bolsa-de-trabajo/static/js/runtime-main.1b8df0cc.js",
+    "runtime-main.js.map": "/bolsa-de-trabajo/static/js/runtime-main.1b8df0cc.js.map",
+    "static/css/2.20aa2d7b.chunk.css": "/bolsa-de-trabajo/static/css/2.20aa2d7b.chunk.css",
+    "static/js/2.1cfe9530.chunk.js": "/bolsa-de-trabajo/static/js/2.1cfe9530.chunk.js",
+    "static/js/2.1cfe9530.chunk.js.map": "/bolsa-de-trabajo/static/js/2.1cfe9530.chunk.js.map",
+    "index.html": "/bolsa-de-trabajo/index.html",
+    "static/css/2.20aa2d7b.chunk.css.map": "/bolsa-de-trabajo/static/css/2.20aa2d7b.chunk.css.map",
+    "static/css/main.411ea4b5.chunk.css.map": "/bolsa-de-trabajo/static/css/main.411ea4b5.chunk.css.map",
+    "static/js/2.1cfe9530.chunk.js.LICENSE.txt": "/bolsa-de-trabajo/static/js/2.1cfe9530.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.5a26d989.js",
+    "static/js/runtime-main.1b8df0cc.js",
     "static/css/2.20aa2d7b.chunk.css",
-    "static/js/2.744db724.chunk.js",
+    "static/js/2.1cfe9530.chunk.js",
     "static/css/main.411ea4b5.chunk.css",
     "static/js/main.21982c77.chunk.js"
   ]
