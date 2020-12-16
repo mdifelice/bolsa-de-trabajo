@@ -14,8 +14,8 @@ Aplicación descentralizada que consta de dos actores:
   - Hacer ofertas sobre un trabajo creado
   - Solicitar el cierre de un trabajo creado
 
-Todo esto corriendo sobre la máquina virtual de [Ethereum](https://ethereum.org/es/), utilizando [Truffle](https://www.trufflesuite.com/truffle) para la creación de contratos inteligentes y [Drizzle](https://www.trufflesuite.com/drizzle) para el cliente que interactúa con los contratos.
+Todo esto corriendo sobre la máquina virtual de [Ethereum](https://ethereum.org/es/){:target="_blank"}, utilizando [Truffle](https://www.trufflesuite.com/truffle){:target="_blank"} para la creación de contratos inteligentes y [Drizzle](https://www.trufflesuite.com/drizzle){:target="_blank"} para el cliente que interactúa con los contratos.
 
 ## Uso
 
-Una versión de prueba funcionando sobre la red Rinkeby puede encontrarse [aquí](https://mdifelice.github.io/bolsa-de-trabajo/). Lo único que se necesita es tener instalado la extensión [MetaMask](https://metamask.io/) para poder realizar las operaciones.
+Una versión de prueba funcionando sobre la red Rinkeby puede encontrarse [aquí](https://mdifelice.github.io/bolsa-de-trabajo/){:target="_blank"}. Lo único que se necesita es tener instalado la extensión [MetaMask](https://metamask.io/){:target="_blank"} para poder realizar las operaciones.
