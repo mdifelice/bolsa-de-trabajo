@@ -30,3 +30,9 @@ if ( window.ethereum ) {
     window.location.reload();
   } );
 }
+
+window.addEventListener( 'load', function() {
+  if ( 'undefined' === typeof web3 ) {
+    alert( 'Necesitas la extensión MetaMask para poder utilizar esta aplicación.' );
+  }
+} );
