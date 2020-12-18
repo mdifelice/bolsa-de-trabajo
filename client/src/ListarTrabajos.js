@@ -228,7 +228,7 @@ export default class ListarTrabajos extends ComponenteDrizzle {
               permitirCancelar = true;
             } else {
               if ( trabajo.balance == 0 ) {
-                estado = 'terminado';
+                estado = 'cerrado';
                 insignia = 'success';
               } else {
                 if ( trabajo.balance == -1 ) {
@@ -237,7 +237,7 @@ export default class ListarTrabajos extends ComponenteDrizzle {
 
                   permitirCancelar = true;
                 } else if ( trabajo.balance > 0 ) {
-                  estado = 'cerrado';
+                  estado = 'aceptado';
                   insignia = 'warning';
                 }
 
@@ -245,7 +245,7 @@ export default class ListarTrabajos extends ComponenteDrizzle {
                   trabajo.ofertaElegida !== -1
                   && trabajo.ofertas[ trabajo.ofertaElegida ]
                   && trabajo.ofertas[ trabajo.ofertaElegida ].fechaFinalizacion * 1000 <= Date.now() ) {
-                  acciones.push( <button className="btn btn-success" onClick={ ( e ) => { e.preventDefault(); this.solicitarCierre( trabajo.direccion ); } } disabled={ estado === 'terminado' }>Solicitar cierre</button> );
+                  acciones.push( <button className="btn btn-success" onClick={ ( e ) => { e.preventDefault(); this.solicitarCierre( trabajo.direccion ); } } disabled={ estado === 'cerrado' }>Solicitar cierre</button> );
                 }
 
                 permitirCancelar = true;

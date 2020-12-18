@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/bolsa-de-trabajo/static/css/main.411ea4b5.chunk.css",
-    "main.js": "/bolsa-de-trabajo/static/js/main.33111c23.chunk.js",
-    "main.js.map": "/bolsa-de-trabajo/static/js/main.33111c23.chunk.js.map",
+    "main.js": "/bolsa-de-trabajo/static/js/main.870c205a.chunk.js",
+    "main.js.map": "/bolsa-de-trabajo/static/js/main.870c205a.chunk.js.map",
     "runtime-main.js": "/bolsa-de-trabajo/static/js/runtime-main.1b8df0cc.js",
     "runtime-main.js.map": "/bolsa-de-trabajo/static/js/runtime-main.1b8df0cc.js.map",
     "static/css/2.20aa2d7b.chunk.css": "/bolsa-de-trabajo/static/css/2.20aa2d7b.chunk.css",
@@ -18,6 +18,6 @@
     "static/css/2.20aa2d7b.chunk.css",
     "static/js/2.1cfe9530.chunk.js",
     "static/css/main.411ea4b5.chunk.css",
-    "static/js/main.33111c23.chunk.js"
+    "static/js/main.870c205a.chunk.js"
   ]
 }
