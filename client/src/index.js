@@ -21,21 +21,37 @@ if ( root ) {
   ReactDOM.render( <App drizzle={drizzle} />, root );
 }
 
-let estaRecargando = null;
+const recargarRed = ( red ) => {
+  const version = drizzle.web3.version;
 
-const recargar = () => {
-  if ( ! estaRecargando ) {
-    estaRecargando = setTimeout( () => {
-      alert( 'Se ha detectado un cambio de red o de cuentas. Se refrescará la página.' );
-
-      window.location.reload();
-    }, 1000 );
+  if (
+    'undefined' !== typeof version
+    && version.network !== red
+  ) {
+    recargar( 'Se ha detectado un cambio de red.' );
   }
 };
 
+const recargarCuentas = ( cuentas ) => {
+  const cuentaActual = drizzle.store.getState().accounts[0];
+
+  if (
+    'undefined' !== typeof cuentaActual
+    && cuentaActual !== cuentas[0]
+  ) {
+    recargar( 'Se ha detectado un cambio de cuentas.' );
+  }
+};
+
+const recargar = ( mensaje ) => {
+  alert( mensaje + ' Se refrescará la página.' );
+
+  window.location.reload();
+};
+
 if ( window.ethereum ) {
-  window.ethereum.on( 'networkChanged', recargar );
-  window.ethereum.on( 'accountsChanged', recargar );
+  window.ethereum.on( 'networkChanged', recargarRed );
+  window.ethereum.on( 'accountsChanged', recargarCuentas );
 }
 
 window.addEventListener( 'load', function() {
