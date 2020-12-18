@@ -21,14 +21,15 @@ if ( root ) {
   ReactDOM.render( <App drizzle={drizzle} />, root );
 }
 
-if ( window.ethereum ) {
-  window.ethereum.on( 'networkChanged', () => {
-    window.location.reload();
-  } );
+const recargar = () => {
+  alert( 'Se ha detectado un cambio de red o de cuentas. Se refrescará la página.' );
 
-  window.ethereum.on( 'accountsChanged', () => {
-    window.location.reload();
-  } );
+  window.location.reload();
+};
+
+if ( window.ethereum ) {
+  window.ethereum.on( 'networkChanged', recargar );
+  window.ethereum.on( 'accountsChanged', recargar );
 }
 
 window.addEventListener( 'load', function() {
