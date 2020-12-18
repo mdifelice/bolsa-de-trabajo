@@ -21,10 +21,16 @@ if ( root ) {
   ReactDOM.render( <App drizzle={drizzle} />, root );
 }
 
-const recargar = () => {
-  alert( 'Se ha detectado un cambio de red o de cuentas. Se refrescará la página.' );
+let estaRecargando = null;
 
-  window.location.reload();
+const recargar = () => {
+  if ( ! estaRecargando ) {
+    estaRecargando = setTimeout( () => {
+      alert( 'Se ha detectado un cambio de red o de cuentas. Se refrescará la página.' );
+
+      window.location.reload();
+    }, 1000 );
+  }
 };
 
 if ( window.ethereum ) {
@@ -37,3 +43,11 @@ window.addEventListener( 'load', function() {
     alert( 'Necesitas la extensión MetaMask para poder utilizar esta aplicación.' );
   }
 } );
+
+setTimeout( () => {
+  var estadoDrizzle = drizzle.store.getState();
+
+  if ( ! estadoDrizzle.drizzleStatus.initialized ) {
+    alert( 'Drizzle está tardando más de la cuenta en iniciar, chequea que MetaMask esté conectado a la red correspondiente.' );
+  }
+}, 3000 );

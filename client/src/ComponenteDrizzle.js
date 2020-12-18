@@ -19,6 +19,7 @@ export default class ComponenteDrizzle extends Component {
   componentDidMount() {
     const estadoDrizzle = this.props.drizzle.store.getState();
 
+    console.log(estadoDrizzle);
     this.subscribirse();
 
     if ( estadoDrizzle.drizzleStatus.initialized ) {
